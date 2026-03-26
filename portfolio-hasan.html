@@ -1,0 +1,1371 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Hasan Yusuf Muizz — Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #060a0f;
+    --bg2:      #0b1118;
+    --surface:  rgba(0,255,136,0.04);
+    --border:   rgba(0,255,136,0.12);
+    --green:    #00ff88;
+    --green2:   #00cc6a;
+    --cyan:     #00d4ff;
+    --red:      #ff4466;
+    --accent:   #00ff88;
+    --accent-2: #00d4ff;
+    --accent-rgb: 0,255,136;
+    --text:     #e8f5f0;
+    --muted:    #4a7060;
+    --mono:     'JetBrains Mono', monospace;
+    --sans:     'Outfit', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+    /* Cursor disembunyikan hanya jika menggunakan mouse */
+  }
+
+  @media (pointer: fine) {
+    body { cursor: none; }
+    .cursor {
+        position: fixed;
+        width: 10px; height: 10px;
+        background: var(--green);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        transform: translate(-50%,-50%);
+        transition: transform 0.1s;
+        box-shadow: 0 0 12px var(--green);
+    }
+    .cursor-ring {
+        position: fixed;
+        width: 36px; height: 36px;
+        border: 1px solid rgba(0,255,136,0.4);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9998;
+        transform: translate(-50%,-50%);
+        transition: all 0.18s ease;
+    }
+  }
+
+  /* Grid bg */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,255,136,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,255,136,0.03) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Glow orbs */
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(120px);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .orb-1 { width:500px; height:500px; background:rgba(0,255,136,0.06); top:-100px; right:-100px; }
+  .orb-2 { width:400px; height:400px; background:rgba(0,212,255,0.04); bottom:0; left:-100px; }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; width: 100%;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 64px;
+    height: 64px;
+    background: rgba(6,10,15,0.8);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    z-index: 100;
+  }
+  .nav-logo {
+    font-family: var(--mono);
+    font-size: 0.9rem;
+    color: var(--green);
+    text-decoration: none;
+    letter-spacing: 1px;
+  }
+  .nav-logo span { color: var(--muted); }
+  .nav-links { display: flex; gap: 32px; list-style: none; }
+  .nav-links a {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 1px;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--green); }
+
+  /* SECTIONS */
+  section { position: relative; z-index: 1; }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: flex; align-items: center;
+    padding: 64px 64px 0;
+  }
+  .hero-inner { max-width: 800px; }
+  .hero-visual {
+    width: 340px;
+    flex-shrink: 0;
+    margin-left: auto;
+  }
+
+  .terminal-line {
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards;
+  }
+  .terminal-line .prompt { color: var(--green2); }
+  .terminal-line .cmd { color: var(--cyan); }
+
+  .hero-name {
+    font-size: clamp(3rem, 8vw, 6.5rem);
+    font-weight: 800;
+    line-height: 1.0;
+    letter-spacing: -3px;
+    margin-bottom: 16px;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.15s ease forwards;
+  }
+  .hero-name .first { color: var(--text); }
+  .hero-name .last {
+    display: block;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-role {
+    font-family: var(--mono);
+    font-size: 1rem;
+    color: var(--muted);
+    margin-bottom: 22px;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.25s ease forwards;
+  }
+  .hero-role .highlight { color: var(--accent); }
+
+  .hero-switch {
+    position: relative;
+    display: inline-flex;
+    gap: 10px;
+    margin-bottom: 28px;
+    padding: 6px;
+    border: 1px solid rgba(var(--accent-rgb), 0.12);
+    border-radius: 999px;
+    background: rgba(255,255,255,0.02);
+    opacity: 0;
+    animation: fadeUp 0.6s 0.3s ease forwards;
+  }
+  .hero-switch-pill {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    height: calc(100% - 12px);
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    box-shadow: 0 0 24px rgba(var(--accent-rgb), 0.22);
+    transition: transform 0.28s ease, width 0.28s ease, background 0.28s ease, box-shadow 0.28s ease;
+    z-index: 0;
+  }
+  .hero-switch-btn {
+    position: relative;
+    z-index: 1;
+    padding: 10px 14px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .hero-switch-btn:hover {
+    color: var(--text);
+  }
+  .hero-switch-btn.active {
+    color: #06110d;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .hero-desc {
+    font-size: 1.05rem;
+    color: rgba(232,245,240,0.6);
+    line-height: 1.8;
+    max-width: 560px;
+    margin-bottom: 48px;
+    font-weight: 300;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.35s ease forwards;
+  }
+
+  .hero-btns {
+    display: flex; gap: 16px; flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.45s ease forwards;
+  }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 28px;
+    border-radius: 6px;
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #060a0f;
+    box-shadow: 0 0 32px rgba(var(--accent-rgb),0.3);
+  }
+  .btn-primary:hover {
+    background: var(--accent-2);
+    box-shadow: 0 0 48px rgba(var(--accent-rgb),0.45);
+    transform: translateY(-2px);
+  }
+  .btn-ghost {
+    border: 1px solid var(--border);
+    color: var(--muted);
+    background: transparent;
+  }
+  .btn-ghost:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(var(--accent-rgb),0.05);
+  }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 40px; left: 64px;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--muted);
+    display: flex; align-items: center; gap: 12px;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.8s ease forwards;
+  }
+  .hero-scroll::before {
+    content: '';
+    display: block;
+    width: 40px; height: 1px;
+    background: var(--muted);
+  }
+
+  /* STAT STRIP */
+  .stat-strip {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    display: flex;
+    padding: 28px 64px;
+    gap: 64px;
+    overflow-x: auto;
+    position: relative; z-index: 1;
+  }
+  .stat-item { display: flex; flex-direction: column; gap: 4px; min-width: fit-content; }
+  .stat-num {
+    font-family: var(--mono);
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .stat-label { font-size: 0.78rem; color: var(--muted); letter-spacing: 0.5px; }
+
+  /* ── ABOUT ── */
+  #about { padding: 100px 64px; }
+  .section-tag {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--accent);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-tag::before { content: '//'; color: var(--muted); }
+
+  .section-title {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    margin-bottom: 48px;
+    line-height: 1.1;
+  }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: start;
+  }
+
+  .about-text p {
+    color: rgba(232,245,240,0.65);
+    line-height: 1.85;
+    font-size: 1rem;
+    font-weight: 300;
+    margin-bottom: 20px;
+  }
+  .about-text p strong { color: var(--text); font-weight: 600; }
+
+  /* Skills */
+  .skills-block { display: flex; flex-direction: column; gap: 20px; }
+
+  .skill-group-label {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .skill-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+  .skill-tag {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    padding: 5px 14px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    transition: all 0.2s;
+  }
+  .skill-tag:hover, .skill-tag.active {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(var(--accent-rgb),0.06);
+  }
+  .skill-tag.active { background: rgba(var(--accent-rgb),0.1); }
+
+  /* ── PROJECTS ── */
+  #projects { padding: 100px 64px; background: linear-gradient(180deg, transparent, rgba(var(--accent-rgb),0.02) 50%, transparent); }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-top: 16px;
+  }
+
+  .project-card {
+    display: block; /* Agar seluruh card bisa diklik */
+    text-decoration: none;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 32px;
+    background: var(--surface);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    cursor: none; /* Tetap disinkronkan dengan kursor kustom */
+  }
+  .project-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(var(--accent-rgb),0.05) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .project-card:hover { border-color: rgba(var(--accent-rgb),0.35); transform: translateY(-4px); box-shadow: 0 24px 48px rgba(0,0,0,0.4), 0 0 0 1px rgba(var(--accent-rgb),0.1); }
+  .project-card:hover::before { opacity: 1; }
+  .project-card.mode-featured {
+    border-color: rgba(var(--accent-rgb),0.36);
+    background: rgba(var(--accent-rgb),0.08);
+    box-shadow: 0 24px 52px rgba(0,0,0,0.28), 0 0 0 1px rgba(var(--accent-rgb),0.1);
+  }
+  .project-card.mode-featured::before { opacity: 1; }
+
+  .project-num {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+    opacity: 0.6;
+  }
+
+  .project-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--text);
+    letter-spacing: -0.3px;
+  }
+
+  .project-desc {
+    font-size: 0.875rem;
+    color: var(--muted);
+    line-height: 1.75;
+    margin-bottom: 20px;
+    font-weight: 300;
+  }
+
+  .project-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .project-tag {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    padding: 3px 10px;
+    border-radius: 3px;
+    background: rgba(0,255,136,0.06);
+    border: 1px solid rgba(0,255,136,0.15);
+    color: var(--green2);
+  }
+
+  /* ── CERTIF ── */
+  #certif { padding: 100px 64px; }
+
+  .certif-list { display: flex; flex-direction: column; gap: 16px; margin-top: 16px; }
+  .certif-lead {
+    max-width: 720px;
+    margin: 0 0 28px;
+    color: rgba(232,245,240,0.62);
+    line-height: 1.8;
+    font-size: 0.96rem;
+  }
+  .certif-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 24px 32px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    text-decoration: none;
+    color: var(--text);
+    transition: all 0.2s;
+  }
+  .certif-item:hover { border-color: rgba(var(--accent-rgb),0.3); background: rgba(var(--accent-rgb),0.04); }
+  .certif-item.mode-featured {
+    border-color: rgba(var(--accent-rgb),0.34);
+    background: rgba(var(--accent-rgb),0.08);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.18), 0 0 0 1px rgba(var(--accent-rgb),0.1);
+  }
+  .certif-left { display: flex; align-items: center; gap: 20px; }
+  .certif-icon {
+    width: 44px; height: 44px;
+    border-radius: 8px;
+    background: rgba(var(--accent-rgb),0.1);
+    border: 1px solid rgba(var(--accent-rgb),0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+  }
+  .certif-name { font-weight: 600; font-size: 0.95rem; margin-bottom: 3px; }
+  .certif-issuer { font-family: var(--mono); font-size: 0.75rem; color: var(--muted); }
+  .certif-item .certif-name,
+  .certif-item .certif-issuer,
+  .certif-item .certif-desc {
+    text-decoration: none;
+  }
+  .certif-desc {
+    margin-top: 8px;
+    color: rgba(232,245,240,0.58);
+    font-size: 0.86rem;
+    line-height: 1.7;
+    max-width: 640px;
+  }
+  .certif-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .certif-tag {
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-family: var(--mono);
+    font-size: 0.67rem;
+    color: var(--accent);
+    border: 1px solid rgba(var(--accent-rgb),0.16);
+    background: rgba(var(--accent-rgb),0.06);
+  }
+  .certif-year {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    color: var(--accent);
+    background: rgba(var(--accent-rgb),0.08);
+    border: 1px solid rgba(var(--accent-rgb),0.2);
+    padding: 4px 12px;
+    border-radius: 4px;
+  }
+
+  /* ── CONTACT ── */
+  #contact { padding: 100px 64px 80px; }
+
+  .contact-inner {
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 64px;
+    background: var(--surface);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .contact-inner::before {
+    content: '';
+    position: absolute;
+    top: -80px; left: 50%; transform: translateX(-50%);
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(0,255,136,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .contact-title {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    letter-spacing: -2px;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, var(--text) 0%, var(--green) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .contact-sub {
+    color: var(--muted);
+    margin-bottom: 48px;
+    font-size: 0.95rem;
+    font-weight: 300;
+  }
+
+  .contact-links { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
+  .contact-link {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 24px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    transition: all 0.2s;
+  }
+  .contact-link:hover { border-color: var(--green); color: var(--green); background: rgba(0,255,136,0.05); }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 24px 64px;
+    display: flex; justify-content: space-between; align-items: center;
+    position: relative; z-index: 1;
+  }
+  footer span {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+  .footer-status { display: flex; align-items: center; gap: 8px; }
+  .status-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { box-shadow: 0 0 0 0 rgba(0,255,136,0.5); }
+    50% { box-shadow: 0 0 0 6px rgba(0,255,136,0); }
+  }
+
+
+  .hero-layout {
+    display: flex;
+    align-items: center;
+    gap: 56px;
+    max-width: 1240px;
+  }
+  .hero-photo {
+    flex-shrink: 0;
+  }
+  .hero-photo img {
+    width: 260px;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 16px;
+    border: 2px solid var(--border);
+    filter: grayscale(20%);
+    box-shadow: 0 0 40px rgba(0,255,136,0.15);
+  }
+  .hero-terminal {
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    background: linear-gradient(180deg, rgba(10,18,25,0.95), rgba(6,10,15,0.92));
+    box-shadow: 0 18px 40px rgba(0,0,0,0.28);
+  }
+  .hero-terminal-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(0,255,136,0.08);
+    background: rgba(255,255,255,0.02);
+  }
+  .hero-terminal-dots {
+    display: flex;
+    gap: 6px;
+  }
+  .hero-terminal-dots span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: block;
+  }
+  .hero-terminal-dots span:nth-child(1) { background: #ff5f57; }
+  .hero-terminal-dots span:nth-child(2) { background: #febc2e; }
+  .hero-terminal-dots span:nth-child(3) { background: #28c840; }
+  .hero-terminal-title {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: rgba(232,245,240,0.6);
+    letter-spacing: 0.8px;
+  }
+  .hero-terminal-body {
+    padding: 14px;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    line-height: 1.7;
+    color: rgba(232,245,240,0.82);
+  }
+  .hero-terminal-row {
+    display: block;
+    margin-bottom: 7px;
+    word-break: break-word;
+  }
+  .hero-terminal-prompt {
+    color: var(--green);
+  }
+  .hero-terminal-cmd {
+    color: var(--cyan);
+  }
+  .hero-terminal-out {
+    color: rgba(232,245,240,0.58);
+  }
+  .hero-terminal-ok {
+    color: #7dffb8;
+  }
+  .hero-terminal-warn {
+    color: #ffd166;
+  }
+  .hero-terminal-note {
+    color: rgba(0,212,255,0.78);
+  }
+  /* SCROLL ANIMATIONS */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  /* ──────────────────────────────────────────────────────────
+     PENAMBAHAN FLEXIBILITAS (RESPONSIVE)
+     ────────────────────────────────────────────────────────── */
+
+  @media (max-width: 900px) {
+    nav { padding: 0 24px; }
+    .nav-links { display: none; } /* Sembunyikan link di mobile untuk kesederhanaan */
+
+    #hero {
+      padding: 100px 24px 40px;
+      height: auto;
+      min-height: 100vh;
+    }
+    .hero-layout {
+      flex-direction: column; /* Foto di atas, teks di bawah */
+      text-align: center;
+      gap: 32px;
+    }
+    .hero-visual {
+      width: min(100%, 320px);
+      margin: 0 auto;
+      align-items: center;
+    }
+    .hero-desc {
+      margin: 0 auto 48px;
+    }
+    .hero-switch {
+      justify-content: center;
+    }
+    .hero-btns {
+      justify-content: center;
+    }
+    .hero-scroll {
+      display: none;
+    }
+
+    #about, #projects, #certif, #contact { 
+      padding: 80px 24px; 
+    }
+
+    .about-grid {
+      grid-template-columns: 1fr; /* Stack about me */
+      gap: 40px;
+    }
+
+    .projects-grid {
+      grid-template-columns: 1fr; /* Card jadi 1 kolom */
+    }
+
+    .stat-strip {
+      padding: 24px;
+      gap: 32px;
+    }
+
+    .certif-item {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 20px;
+    }
+    .certif-year {
+      align-self: flex-end;
+    }
+
+    .contact-inner {
+      padding: 48px 24px;
+    }
+    .contact-title {
+      font-size: 2.5rem;
+    }
+
+    footer {
+      padding: 24px;
+      flex-direction: column;
+      gap: 16px;
+      text-align: center;
+    }
+  }
+
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo"><span>~/</span>hasan-muizz</a>
+  <ul class="nav-links">
+    <li><a href="#about">about</a></li>
+    <li><a href="#projects">projects</a></li>
+    <li><a href="#certif">certifications</a></li>
+    <li><a href="#contact">contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-layout">
+  <div class="hero-photo">
+    <!-- Pastikan file foto-profil.jpg ada di folder yang sama -->
+    <img src="fotosaya.jpeg" alt="Hasan Yusuf Muizz" />
+  </div>
+<div class="hero-inner">
+    <div class="terminal-line">
+      <span class="prompt">hasan@portfolio</span>:<span class="cmd"> whoami</span>
+    </div>
+    <h1 class="hero-name">
+      <span class="first">Hasan Yusuf</span>
+      <span class="last">Muizz.</span>
+    </h1>
+    <p class="hero-role" id="heroRole">
+      <span class="highlight">Data Analysis</span> · Software Development · IT Operations
+    </p>
+    <div class="hero-switch" aria-label="Portfolio mode switch">
+      <span class="hero-switch-pill" id="heroSwitchPill" aria-hidden="true"></span>
+      <button class="hero-switch-btn active" type="button" data-mode="analyst">Data Analyst</button>
+      <button class="hero-switch-btn" type="button" data-mode="developer">Developer</button>
+      <button class="hero-switch-btn" type="button" data-mode="security">Cyber Security</button>
+    </div>
+    <p class="hero-desc" id="heroDesc">
+      Mahasiswa Teknik Informatika semester 6 yang adaptif dan terbiasa mengerjakan
+      analisis data, automasi dengan Python, serta pengembangan sistem berbasis web.
+      Nyaman bekerja dengan tools teknis, logika problem solving, dan project yang berorientasi hasil.
+    </p>
+    <div class="hero-btns">
+      <a href="#projects" class="btn btn-primary">↓ Lihat Projects</a>
+      <a href="#contact" class="btn btn-ghost">Hubungi Saya</a>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="hero-terminal" aria-label="Terminal preview">
+      <div class="hero-terminal-bar">
+        <div class="hero-terminal-dots">
+          <span></span><span></span><span></span>
+        </div>
+        <div class="hero-terminal-title">hasan@linux:~</div>
+      </div>
+      <div class="hero-terminal-body" id="heroTerminalBody">
+        <span class="hero-terminal-row"><span class="hero-terminal-prompt">hasan@portfolio:~$</span> <span class="hero-terminal-cmd">whoami</span></span>
+        <span class="hero-terminal-row hero-terminal-out">Hasan Yusuf Muizz / Informatics Student</span>
+        <span class="hero-terminal-row"><span class="hero-terminal-prompt">hasan@portfolio:~$</span> <span class="hero-terminal-cmd">cat focus.txt</span></span>
+        <span class="hero-terminal-row hero-terminal-out">Data Analysis</span>
+        <span class="hero-terminal-row hero-terminal-out">Python Automation</span>
+        <span class="hero-terminal-row hero-terminal-out">Web Development</span>
+        <span class="hero-terminal-row"><span class="hero-terminal-prompt">hasan@portfolio:~$</span> <span class="hero-terminal-cmd">ls skills/</span></span>
+        <span class="hero-terminal-row hero-terminal-note">python  sql  excel  linux  flask  react</span>
+        <span class="hero-terminal-row"><span class="hero-terminal-prompt">hasan@portfolio:~$</span> <span class="hero-terminal-cmd">./status.sh</span></span>
+        <span class="hero-terminal-row hero-terminal-ok">[OK] ready_for_internship = true</span>
+        <span class="hero-terminal-row"><span class="hero-terminal-prompt">hasan@portfolio:~$</span> <span class="hero-terminal-cmd">tail -n 2 goals.log</span></span>
+        <span class="hero-terminal-row hero-terminal-warn">build real-world projects</span>
+        <span class="hero-terminal-row hero-terminal-warn">grow as analyst / developer in internship</span>
+      </div>
+    </div>
+  </div>
+  </div>
+  <div class="hero-scroll">scroll down</div>
+</section>
+
+<!-- STAT STRIP -->
+<div class="stat-strip">
+  <div class="stat-item">
+    <span class="stat-num">3.36</span>
+    <span class="stat-label">IPK / 4.00</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num">5+</span>
+    <span class="stat-label">Portfolio Projects</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num">2</span>
+    <span class="stat-label">Sertifikasi</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num">6th</span>
+    <span class="stat-label">Semester</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num">ID/EN</span>
+    <span class="stat-label">Languages</span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-tag">about me</div>
+  <h2 class="section-title reveal" id="aboutTitle">Adaptif.<br><span style="color:var(--accent)">Problem-Solver.</span></h2>
+
+  <div class="about-grid reveal">
+    <div class="about-text">
+      <p id="aboutIntro">
+        Saya <strong>Hasan Yusuf Muizz</strong>, mahasiswa S1 Teknik Informatika di
+        <strong>Universitas Al Azhar Indonesia</strong>. Minat saya mencakup
+        area yang saling terhubung: <strong>Data Analysis</strong>,
+        Software Development, automation, dan technical problem solving.
+      </p>
+      <p id="aboutDetail">
+        Saya memiliki pengalaman praktis dalam pengolahan data, analisis insight,
+        pengembangan sistem berbasis Python dan web, serta eksplorasi tools teknis
+        untuk menyelesaikan masalah secara efisien. Setiap project yang saya kerjakan
+        berorientasi pada hasil, struktur kerja yang rapi, dan dampak nyata.
+      </p>
+      <p id="aboutQuote" style="font-family: var(--mono); font-size:0.82rem; color:var(--muted); border-left:2px solid var(--green); padding-left:16px;">
+        "Adaptif, problem-solver, dan siap berkontribusi dalam berbagai peran IT."
+      </p>
+    </div>
+
+    <div class="skills-block">
+      <div>
+        <div class="skill-group-label" id="skillsLabel1">// Analysis & Tools</div>
+        <div class="skill-tags" id="skillsGroup1">
+          <span class="skill-tag active">Data Analysis</span>
+          <span class="skill-tag active">SQL</span>
+          <span class="skill-tag active">Excel / Spreadsheet</span>
+          <span class="skill-tag active">Log Analysis</span>
+          <span class="skill-tag active">Splunk</span>
+        </div>
+      </div>
+      <div>
+        <div class="skill-group-label" id="skillsLabel2">// Development</div>
+        <div class="skill-tags" id="skillsGroup2">
+          <span class="skill-tag">Python</span>
+          <span class="skill-tag">Flask</span>
+          <span class="skill-tag">REST API</span>
+          <span class="skill-tag">SQL</span>
+          <span class="skill-tag">React.js</span>
+        </div>
+      </div>
+      <div>
+        <div class="skill-group-label" id="skillsLabel3">// Systems & Other</div>
+        <div class="skill-tags" id="skillsGroup3">
+          <span class="skill-tag">Linux</span>
+          <span class="skill-tag">Automation</span>
+          <span class="skill-tag">Problem Solving</span>
+          <span class="skill-tag">Blockchain</span>
+          <span class="skill-tag">NLP</span>
+          <span class="skill-tag">Technical Documentation</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-tag">selected projects</div>
+  <h2 class="section-title reveal">Yang Pernah<br><span style="color:var(--accent)">Saya Bangun.</span></h2>
+
+  <div class="projects-grid">
+
+    <!-- PROJECT 01 - Ubah link href ke github anda -->
+    <a href="https://github.com/kplseas/reviewsenses" target="_blank" class="project-card reveal mode-featured" data-mode-project="analyst">
+      <div class="project-num">PROJECT_01</div>
+      <div class="project-title">ReviewSense — Sentiment Analysis System</div>
+      <p class="project-desc">
+        Aplikasi berbasis AI untuk analisis sentimen ulasan secara otomatis.
+        Mengimplementasikan NLP untuk preprocessing dan klasifikasi teks,
+        menghasilkan insight untuk mendukung pengambilan keputusan.
+      </p>
+      <div class="project-tags">
+        <span class="project-tag">Python</span>
+        <span class="project-tag">NLP</span>
+        <span class="project-tag">Machine Learning</span>
+        <span class="project-tag">AI</span>
+      </div>
+    </a>
+
+    <!-- PROJECT 02 -->
+    <a href="https://github.com/hasanyusufmuizz-code/Sinkronisasi-File-Cloud-Aman-dengan-Kriptografi-Hibrida-AES-RSA-" target="_blank" class="project-card reveal" data-mode-project="developer">
+      <div class="project-num">PROJECT_02</div>
+      <div class="project-title">Sinkronisasi File Cloud dengan Kriptografi Hibrida (AES-RSA)</div>
+      <p class="project-desc">
+        Sistem sinkronisasi file aman dengan AES-256 untuk enkripsi data berkecepatan
+        tinggi dan RSA-2048 untuk pertukaran kunci. Backend RESTful API dengan End-to-End
+        Encryption (E2EE).
+      </p>
+      <div class="project-tags">
+        <span class="project-tag">Python</span>
+        <span class="project-tag">AES-256</span>
+        <span class="project-tag">RSA-2048</span>
+        <span class="project-tag">REST API</span>
+        <span class="project-tag">E2EE</span>
+      </div>
+    </a>
+
+    <!-- PROJECT 03 -->
+    <a href="https://github.com/hasanyusufmuizz-code/academic-blockchain-tamper-detection" target="_blank" class="project-card reveal" data-mode-project="developer">
+      <div class="project-num">PROJECT_03</div>
+      <div class="project-title">Academic Blockchain Tamper Detection System</div>
+      <p class="project-desc">
+        Sistem blockchain sederhana berbasis Python untuk menjaga integritas data akademik.
+        Hashing SHA-256 untuk mendeteksi perubahan data tidak sah. Integrasi Flask REST API
+        + Google Sheets sebagai simulasi cloud storage.
+      </p>
+      <div class="project-tags">
+        <span class="project-tag">Python</span>
+        <span class="project-tag">Blockchain</span>
+        <span class="project-tag">SHA-256</span>
+        <span class="project-tag">Flask</span>
+        <span class="project-tag">Google Sheets API</span>
+      </div>
+    </a>
+
+    <!-- PROJECT 04 -->
+    <a href="https://medium.com/@hasanyusufmuizz/mendeteksi-ssh-brute-force-attack-menggunakan-splunk-bbab790756d0" target="_blank" class="project-card reveal" data-mode-project="security">
+      <div class="project-num" style="opacity:1;">PROJECT_04 ★ LOG ANALYSIS</div>
+      <div class="project-title">SSH Brute Force Detection using Splunk</div>
+      <p class="project-desc">
+        Project analisis log Linux auth (sshd) menggunakan Splunk untuk mengolah data
+        event, membangun dashboard, dan menghasilkan insight dari pola aktivitas login.
+        Mencakup filtering data, visualisasi, dan pemantauan sederhana near real-time.
+      </p>
+      <div class="project-tags">
+        <span class="project-tag">Splunk</span>
+        <span class="project-tag">Data Visualization</span>
+        <span class="project-tag">SPL</span>
+        <span class="project-tag">Log Analysis</span>
+        <span class="project-tag">Linux</span>
+        <span class="project-tag">Monitoring</span>
+      </div>
+    </a>
+
+    <!-- PROJECT 05 -->
+    <a href="https://github.com/hasanyusufmuizz-code/financial-transaction-fraud-detection" target="_blank" class="project-card reveal" data-mode-project="analyst developer security">
+      <div class="project-num">PROJECT_05 ★ FRAUD DETECTION</div>
+      <div class="project-title">Financial Transaction Fraud Detection</div>
+      <p class="project-desc">
+        Project lintas domain untuk menganalisis pola transaksi finansial, mengidentifikasi
+        aktivitas mencurigakan berisiko tinggi, dan membangun baseline model klasifikasi
+        serta anomaly detection untuk membantu deteksi fraud secara lebih cepat.
+      </p>
+      <div class="project-tags">
+        <span class="project-tag">Data Analysis</span>
+        <span class="project-tag">Fraud Detection</span>
+        <span class="project-tag">Machine Learning</span>
+        <span class="project-tag">Anomaly Detection</span>
+        <span class="project-tag">Security Analytics</span>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- CERTIF -->
+<section id="certif">
+  <div class="section-tag">certifications</div>
+  <h2 class="section-title reveal">Sertifikasi &<br><span style="color:var(--accent)">Pengembangan.</span></h2>
+  <p class="certif-lead reveal" id="certifLead">
+    Sertifikasi dan learning path ini saya gunakan sebagai fondasi untuk memperkuat kemampuan teknis,
+    analytical thinking, dan kesiapan kerja di berbagai peran magang bidang IT.
+  </p>
+
+  <div class="certif-list">
+    
+    <!-- Sertifikat 1: Bisa diklik -->
+    <a href="https://coursera.org/share/594f7a0d6df8433b3b8b8a94da307311" target="_blank" class="certif-item reveal" data-mode-certif="security">
+      <div class="certif-left">
+        <div class="certif-icon">🛡️</div>
+        <div>
+          <div class="certif-name">Google Cybersecurity Professional Certificate</div>
+          <div class="certif-issuer">Coursera · Google</div>
+          <p class="certif-desc">
+            Program pembelajaran terstruktur yang memperkuat dasar security operations, analisis risiko,
+            log monitoring, incident thinking, dan pemahaman tools keamanan modern.
+          </p>
+          <div class="certif-tags">
+            <span class="certif-tag">Security</span>
+            <span class="certif-tag">Operations</span>
+            <span class="certif-tag">Foundations</span>
+          </div>
+        </div>
+      </div>
+      <span class="certif-year">2025</span>
+    </a>
+
+    <!-- Sertifikat 2: Bisa diklik -->
+    <a href="https://app.letsdefend.io/certificate/show/17c1c4d4-909d-4981-bd85-fe4c670ec6b7" target="_blank" class="certif-item reveal" data-mode-certif="analyst">
+      <div class="certif-left">
+        <div class="certif-icon">🔍</div>
+        <div>
+          <div class="certif-name">SOC Analyst Path</div>
+          <div class="certif-issuer">LetsDefend</div>
+          <p class="certif-desc">
+            Learning path berbasis simulasi yang melatih observasi alert, analisis log, korelasi event,
+            dan penyusunan insight dari aktivitas sistem secara lebih terstruktur.
+          </p>
+          <div class="certif-tags">
+            <span class="certif-tag">Log Analysis</span>
+            <span class="certif-tag">Monitoring</span>
+            <span class="certif-tag">Simulation Lab</span>
+          </div>
+        </div>
+      </div>
+      <span class="certif-year">2025</span>
+    </a>
+
+    <!-- Item In Progress: Tetap div (tidak bisa diklik karena belum ada sertifnya) -->
+    <div class="certif-item reveal" data-mode-certif="developer" style="border-style:dashed; opacity:0.78; cursor: default;">
+      <div class="certif-left">
+        <div class="certif-icon">⏳</div>
+        <div>
+          <div class="certif-name">Next Learning Track</div>
+          <div class="certif-issuer">In Progress</div>
+          <p class="certif-desc">
+            Saya terus menyiapkan pembelajaran berikutnya yang relevan untuk pengembangan karier di area data,
+            software, atau technical operations sesuai kebutuhan role yang dituju.
+          </p>
+          <div class="certif-tags">
+            <span class="certif-tag">Continuous Learning</span>
+            <span class="certif-tag">Career Ready</span>
+          </div>
+        </div>
+      </div>
+      <span class="certif-year" style="color:var(--muted); border-color:var(--muted);">Soon</span>
+    </div>
+
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-inner reveal">
+    <div class="section-tag" style="justify-content:center; margin-bottom:24px;">get in touch</div>
+    <h2 class="contact-title">Mari Terhubung.</h2>
+    <p class="contact-sub">
+      Terbuka untuk peluang magang, kolaborasi project, atau diskusi seputar data, software, dan bidang IT secara umum.
+    </p>
+    <div class="contact-links">
+      <a href="mailto:hasanyusufmuizz@gmail.com" class="contact-link">
+        ✉ hasanyusufmuizz@gmail.com
+      </a>
+      <a href="https://linkedin.com/in/hasanyusuf-muizz-7ab2a4339" target="_blank" class="contact-link">
+        ↗ LinkedIn
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span>© 2025 Hasan Yusuf Muizz</span>
+  <div class="footer-status">
+    <div class="status-dot"></div>
+    <span>Available for opportunities</span>
+  </div>
+</footer>
+
+<script>
+  // Custom cursor logic
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  
+  // Deteksi jika perangkat mendukung hover (bukan layar sentuh)
+  if (window.matchMedia("(pointer: fine)").matches) {
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+    function animateCursor() {
+      cursor.style.left = mx + 'px';
+      cursor.style.top = my + 'px';
+      rx += (mx - rx) * 0.12;
+      ry += (my - ry) *.12;
+      ring.style.left = rx + 'px';
+      ring.style.top = ry + 'px';
+      requestAnimationFrame(animateCursor);
+    }
+    animateCursor();
+  }
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        e.target.style.transitionDelay = (i % 4) * 0.1 + 's';
+        e.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => io.observe(el));
+
+  const modeData = {
+    analyst: {
+      accent: '#00ff88',
+      accent2: '#00d4ff',
+      accentRgb: '0,255,136',
+      aboutTitle: 'Analytical.<br><span style="color:var(--accent)">Adaptif.</span>',
+      aboutIntro: 'Saya <strong>Hasan Yusuf Muizz</strong>, mahasiswa S1 Teknik Informatika di <strong>Universitas Al Azhar Indonesia</strong>. Saya tertarik pada area yang saling terhubung: <strong>Data Analysis</strong>, automation, software development, dan technical problem solving.',
+      aboutDetail: 'Saya memiliki pengalaman praktis dalam pengolahan data, analisis insight, dan eksplorasi tools teknis untuk menyusun solusi yang lebih efisien. Saya nyaman membaca pola, merapikan proses kerja, dan menyajikan hasil dalam bentuk yang mudah dipahami.',
+      aboutQuote: '"Berpikir runtut, membaca pola, dan mengubah data jadi insight yang bisa dipakai."',
+      certifLead: 'Sertifikasi dan learning path ini saya gunakan sebagai fondasi untuk memperkuat analytical thinking, observasi data, dan kesiapan kerja di berbagai peran magang bidang IT.',
+      skills: [
+        { label: '// Analysis & Tools', items: ['Data Analysis', 'SQL', 'Excel / Spreadsheet', 'Log Analysis', 'Splunk'] },
+        { label: '// Development', items: ['Python', 'Flask', 'REST API', 'React.js', 'Dashboard Logic'] },
+        { label: '// Systems & Other', items: ['Linux', 'Automation', 'Problem Solving', 'Data Cleaning', 'Technical Documentation'] }
+      ],
+      role: '<span class="highlight">Data Analysis</span> · Software Development · IT Operations',
+      desc: 'Mahasiswa Teknik Informatika semester 6 yang adaptif dan terbiasa mengerjakan analisis data, automasi dengan Python, serta pengembangan sistem berbasis web. Nyaman bekerja dengan tools teknis, logika problem solving, dan project yang berorientasi hasil.',
+      terminal: [
+        ['prompt', 'hasan@portfolio:~$'], ['cmd', 'whoami'],
+        ['out', 'Hasan Yusuf Muizz / Informatics Student'],
+        ['prompt', 'hasan@portfolio:~$'], ['cmd', 'cat focus.txt'],
+        ['out', 'Data Analysis'],
+        ['out', 'Python Automation'],
+        ['out', 'Web Development'],
+        ['prompt', 'hasan@portfolio:~$'], ['cmd', 'ls skills/'],
+        ['note', 'python  sql  excel  linux  flask  react'],
+        ['prompt', 'hasan@portfolio:~$'], ['cmd', './status.sh'],
+        ['ok', '[OK] ready_for_internship = true'],
+        ['prompt', 'hasan@portfolio:~$'], ['cmd', 'tail -n 2 goals.log'],
+        ['warn', 'build real-world projects'],
+        ['warn', 'grow as analyst / developer in internship']
+      ]
+    },
+    developer: {
+      accent: '#00d4ff',
+      accent2: '#7df9ff',
+      accentRgb: '0,212,255',
+      aboutTitle: 'Build.<br><span style="color:var(--accent)">Improve.</span>',
+      aboutIntro: 'Saya <strong>Hasan Yusuf Muizz</strong>, mahasiswa S1 Teknik Informatika yang tertarik membangun solusi digital yang rapi, fungsional, dan bisa terus dikembangkan. Fokus saya ada pada <strong>software development</strong>, backend logic, dan automation.',
+      aboutDetail: 'Saya terbiasa mengerjakan project berbasis Python dan web, menyusun alur data, menghubungkan komponen backend, dan mencari struktur implementasi yang efisien. Saya menikmati proses mengubah kebutuhan menjadi sistem yang benar-benar berjalan.',
+      aboutQuote: '"Saya suka membangun sistem yang jelas alurnya, berguna, dan siap dikembangkan lebih lanjut."',
+      certifLead: 'Bagian ini menunjukkan proses belajar saya yang terus berjalan. Saya memandang sertifikasi sebagai pelengkap praktik project untuk memperkuat dasar engineering, struktur berpikir, dan kesiapan kerja.',
+      skills: [
+        { label: '// Development Stack', items: ['Python', 'Flask', 'REST API', 'React.js', 'SQL'] },
+        { label: '// Engineering Focus', items: ['Backend Logic', 'Automation', 'System Design', 'Debugging', 'API Integration'] },
+        { label: '// Systems & Other', items: ['Linux', 'Git Workflow', 'Problem Solving', 'Documentation', 'Testing Mindset'] }
+      ],
+      role: '<span class="highlight">Software Development</span> · Backend Systems · Automation',
+      desc: 'Fokus pada pengembangan aplikasi berbasis Python dan web, penyusunan alur backend, serta automasi untuk membuat proses kerja lebih efisien. Saya nyaman memecah masalah menjadi sistem yang rapi, bisa dipakai, dan mudah dikembangkan.',
+      terminal: [
+        ['prompt', 'hasan@portfolio:~$'], ['cmd', 'whoami'],
+        ['out', 'Hasan Yusuf Muizz / Builder mindset'],
+        ['prompt', 'hasan@portfolio:~$'], ['cmd', 'cat stack.txt'],
+        ['out', 'Python'],
+        ['out', 'Flask / REST API'],
+        ['out', 'React / Web Interface'],
+        ['prompt', 'hasan@portfolio:~$'], ['cmd', 'ls tools/'],
+        ['note', 'python  flask  react  sql  linux  git'],
+        ['prompt', 'hasan@portfolio:~$'], ['cmd', './deploy-thinking.sh'],
+        ['ok', '[OK] solving problems with systems'],
+        ['prompt', 'hasan@portfolio:~$'], ['cmd', 'tail -n 2 goals.log'],
+        ['warn', 'ship useful products'],
+        ['warn', 'grow as developer in internship']
+      ]
+    },
+    security: {
+      accent: '#ff7a59',
+      accent2: '#ffd166',
+      accentRgb: '255,122,89',
+      aboutTitle: 'Observe.<br><span style="color:var(--accent)">Investigate.</span>',
+      aboutIntro: 'Saya <strong>Hasan Yusuf Muizz</strong>, mahasiswa S1 Teknik Informatika yang tertarik pada <strong>cyber security</strong>, log analysis, dan monitoring aktivitas sistem. Saya nyaman bekerja dengan tools teknis untuk memahami pola, anomali, dan alur kejadian.',
+      aboutDetail: 'Saya memiliki pengalaman eksplorasi analisis log dengan Splunk, penggunaan Linux untuk investigasi sederhana, dan Python untuk membantu automasi teknis. Pendekatan saya berfokus pada ketelitian, observasi, dan penyusunan insight yang relevan.',
+      aboutQuote: '"Teliti membaca log, memahami pola aktivitas, dan terus mengasah mindset investigatif."',
+      certifLead: 'Sertifikasi di bagian ini merepresentasikan penguatan fondasi security dan monitoring yang saya pelajari melalui program terstruktur serta latihan berbasis simulasi.',
+      skills: [
+        { label: '// Security & Monitoring', items: ['Splunk', 'Log Analysis', 'Monitoring', 'Linux', 'Security Fundamentals'] },
+        { label: '// Investigation Tools', items: ['Wireshark', 'Nmap', 'Python', 'SQL', 'Event Correlation'] },
+        { label: '// Systems & Other', items: ['Automation', 'Documentation', 'Problem Solving', 'Technical Reporting', 'Alert Thinking'] }
+      ],
+      role: '<span class="highlight">Cyber Security</span> · Log Analysis · Monitoring',
+      desc: 'Memiliki ketertarikan kuat pada analisis log, monitoring, dan eksplorasi tools keamanan untuk memahami pola aktivitas sistem. Saya juga terbiasa memakai Python dan Linux untuk membantu investigasi, automasi, dan penyajian insight teknis.',
+      terminal: [
+        ['prompt', 'hasan@portfolio:~$'], ['cmd', 'whoami'],
+        ['out', 'Hasan Yusuf Muizz / Security learner'],
+        ['prompt', 'hasan@portfolio:~$'], ['cmd', 'cat focus.txt'],
+        ['out', 'Log Analysis'],
+        ['out', 'Splunk Monitoring'],
+        ['out', 'Linux Investigation'],
+        ['prompt', 'hasan@portfolio:~$'], ['cmd', 'ls tools/'],
+        ['note', 'splunk  linux  wireshark  nmap  python  sql'],
+        ['prompt', 'hasan@portfolio:~$'], ['cmd', './status.sh'],
+        ['ok', '[OK] ready_for_soc_lab = true'],
+        ['prompt', 'hasan@portfolio:~$'], ['cmd', 'tail -n 2 goals.log'],
+        ['warn', 'improve technical investigation skills'],
+        ['warn', 'grow as security analyst in internship']
+      ]
+    }
+  };
+
+  const heroRole = document.getElementById('heroRole');
+  const heroDesc = document.getElementById('heroDesc');
+  const heroTerminalBody = document.getElementById('heroTerminalBody');
+  const heroSwitch = document.querySelector('.hero-switch');
+  const heroSwitchPill = document.getElementById('heroSwitchPill');
+  const switchButtons = document.querySelectorAll('.hero-switch-btn');
+  const modeProjects = document.querySelectorAll('[data-mode-project]');
+  const aboutTitle = document.getElementById('aboutTitle');
+  const aboutIntro = document.getElementById('aboutIntro');
+  const aboutDetail = document.getElementById('aboutDetail');
+  const aboutQuote = document.getElementById('aboutQuote');
+  const skillsLabel1 = document.getElementById('skillsLabel1');
+  const skillsLabel2 = document.getElementById('skillsLabel2');
+  const skillsLabel3 = document.getElementById('skillsLabel3');
+  const skillsGroup1 = document.getElementById('skillsGroup1');
+  const skillsGroup2 = document.getElementById('skillsGroup2');
+  const skillsGroup3 = document.getElementById('skillsGroup3');
+  const certifLead = document.getElementById('certifLead');
+  const modeCertifs = document.querySelectorAll('[data-mode-certif]');
+
+  function renderSkills(items, activeCount = 2) {
+    return items.map((item, index) => `<span class="skill-tag${index < activeCount ? ' active' : ''}">${item}</span>`).join('');
+  }
+
+  function moveSwitchPill(activeBtn) {
+    if (!heroSwitchPill || !activeBtn || !heroSwitch) return;
+    heroSwitchPill.style.width = `${activeBtn.offsetWidth}px`;
+    heroSwitchPill.style.transform = `translateX(${activeBtn.offsetLeft}px)`;
+  }
+
+  function renderTerminal(rows) {
+    const html = [];
+    for (let i = 0; i < rows.length; i += 1) {
+      const first = rows[i];
+      const second = rows[i + 1];
+      if (first && second && first[0] === 'prompt' && second[0] === 'cmd') {
+        html.push(`<span class="hero-terminal-row"><span class="hero-terminal-prompt">${first[1]}</span> <span class="hero-terminal-cmd">${second[1]}</span></span>`);
+        i += 1;
+      } else if (first) {
+        html.push(`<span class="hero-terminal-row hero-terminal-${first[0]}">${first[1]}</span>`);
+      }
+    }
+    return html.join('');
+  }
+
+  function applyMode(mode) {
+    const data = modeData[mode];
+    if (!data) return;
+    document.documentElement.style.setProperty('--accent', data.accent);
+    document.documentElement.style.setProperty('--accent-2', data.accent2);
+    document.documentElement.style.setProperty('--accent-rgb', data.accentRgb);
+    heroRole.innerHTML = data.role;
+    heroDesc.textContent = data.desc;
+    heroTerminalBody.innerHTML = renderTerminal(data.terminal);
+    aboutTitle.innerHTML = data.aboutTitle;
+    aboutIntro.innerHTML = data.aboutIntro;
+    aboutDetail.textContent = data.aboutDetail;
+    aboutQuote.textContent = data.aboutQuote;
+    aboutQuote.style.borderLeftColor = data.accent;
+    certifLead.textContent = data.certifLead;
+    skillsLabel1.textContent = data.skills[0].label;
+    skillsLabel2.textContent = data.skills[1].label;
+    skillsLabel3.textContent = data.skills[2].label;
+    skillsGroup1.innerHTML = renderSkills(data.skills[0].items, 3);
+    skillsGroup2.innerHTML = renderSkills(data.skills[1].items, 2);
+    skillsGroup3.innerHTML = renderSkills(data.skills[2].items, 2);
+
+    switchButtons.forEach(btn => {
+      const isActive = btn.dataset.mode === mode;
+      btn.classList.toggle('active', isActive);
+      if (isActive) moveSwitchPill(btn);
+    });
+
+    modeProjects.forEach(card => {
+      const modes = (card.dataset.modeProject || '').split(' ').filter(Boolean);
+      card.classList.toggle('mode-featured', modes.includes(mode));
+    });
+    modeCertifs.forEach(card => {
+      card.classList.toggle('mode-featured', card.dataset.modeCertif === mode);
+    });
+  }
+
+  switchButtons.forEach(btn => {
+    btn.addEventListener('click', () => applyMode(btn.dataset.mode));
+  });
+
+  window.addEventListener('resize', () => {
+    moveSwitchPill(document.querySelector('.hero-switch-btn.active'));
+  });
+
+  applyMode('analyst');
+</script>
+</body>
+</html>
